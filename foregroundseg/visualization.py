@@ -115,3 +115,12 @@ class SegmentationVisualizer:
         plt.tight_layout()
     
         return fig
+
+    
+    def confidence_heatmap(probabilities):
+
+        plt.imshow(probabilities, cmap="viridis")
+
+        plt.colorbar()
+
+        plt.title("Prediction Confidence")
