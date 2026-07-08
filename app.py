@@ -41,6 +41,23 @@ if uploaded:
     background = extract_background(image, mask)
     overlay_img = overlay(image, mask)
 
+    from foregroundseg.metrics import (
+    InferenceTimer,
+    SegmentationMetrics,
+    )
+    
+    timer = InferenceTimer()
+    
+    timer.start()
+    
+    segmentation = predictor.predict(image)
+    
+    elapsed = timer.stop()
+    
+    metrics = SegmentationMetrics(mask)
+    
+    stats = metrics.summary()
+
     c1, c2 = st.columns(2)
 
     with c1:
@@ -60,11 +77,16 @@ if uploaded:
     total_pixels = mask.size
 
     st.metric(
-        "Foreground",
-        f"{100*foreground_pixels/total_pixels:.1f}%"
+        "Inference Time",
+        f"{elapsed:.3f} s"
     )
-
+    
+    st.metric(
+        "Foreground",
+        f"{stats['foreground_ratio']*100:.1f}%"
+    )
+    
     st.metric(
         "Background",
-        f"{100*(1-foreground_pixels/total_pixels):.1f}%"
+        f"{stats['background_ratio']*100:.1f}%"
     )
