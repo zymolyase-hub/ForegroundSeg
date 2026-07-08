@@ -1,25 +1,19 @@
-from torchvision.models.segmentation import deeplabv3_resnet101
-
-import torch
-
+from .models.model_loader import ModelLoader
 from .preprocessing import ImagePreprocessor
 
 
 class ForegroundPredictor:
 
-    def __init__(self):
+    def __init__(self,
+                 model_name="deeplabv3_resnet101"):
 
-        self.device = torch.device(
-            "cuda" if torch.cuda.is_available() else "cpu"
-        )
+        loader = ModelLoader()
 
-        self.model = deeplabv3_resnet101(
-            weights="DEFAULT"
-        )
+        loaded = loader.load(model_name)
 
-        self.model.to(self.device)
-
-        self.model.eval()
+        self.model = loaded.model
+        self.device = loaded.device
+        self.model_name = loaded.name
 
         self.preprocessor = ImagePreprocessor()
 
@@ -31,6 +25,6 @@ class ForegroundPredictor:
 
         with torch.no_grad():
 
-            prediction = self.model(tensor)["out"]
+            output = self.model(tensor)["out"]
 
-        return prediction.argmax(1).squeeze().cpu().numpy()
+        return output.argmax(1).squeeze().cpu().numpy()
