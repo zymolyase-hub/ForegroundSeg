@@ -4,12 +4,27 @@ import torchvision.transforms as transforms
 
 
 class ImagePreprocessor:
+
+    def __init__(self):
     """
     Converts PIL images into tensors that can be used
     by the segmentation network.
+    
+    def __init__(self, image_size=None):
     """
 
-    def __init__(self, image_size=None):
+        self.transform = transforms.Compose([
+
+            transforms.Resize((512, 512)),
+
+            transforms.ToTensor(),
+
+            transforms.Normalize(
+                mean=[0.485,0.456,0.406],
+                std=[0.229,0.224,0.225]
+            )
+
+        ])
 
         transform_list = []
 
