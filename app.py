@@ -1,92 +1,11 @@
-import time
-import streamlit as st
-from PIL import Image
+from foregroundseg.visualization import SegmentationVisualizer
 
-from foregroundseg.predictor import ForegroundPredictor
-from foregroundseg.image_utils import (
-    create_foreground_mask,
-    extract_foreground,
-    extract_background,
-    overlay,
-)
+visualizer = SegmentationVisualizer()
 
-st.set_page_config(
-    page_title="ForegroundSeg",
-    layout="wide"
-)
+overlay = visualizer.overlay(image, mask)
 
-st.title("ForegroundSeg")
-st.subheader("AI Foreground / Background Segmentation with PyTorch")
+foreground = visualizer.foreground(image, mask)
 
-uploaded = st.file_uploader(
-    "Upload an image",
-    type=["png", "jpg", "jpeg"]
-)
+background = visualizer.background(image, mask)
 
-if uploaded:
-
-    image = Image.open(uploaded).convert("RGB")
-
-    predictor = ForegroundPredictor()
-
-    start = time.time()
-
-    segmentation = predictor.predict(image)
-
-    elapsed = time.time() - start
-
-    mask = create_foreground_mask(segmentation)
-
-    foreground = extract_foreground(image, mask)
-    background = extract_background(image, mask)
-    overlay_img = overlay(image, mask)
-
-    from foregroundseg.metrics import (
-    InferenceTimer,
-    SegmentationMetrics,
-    )
-    
-    timer = InferenceTimer()
-    
-    timer.start()
-    
-    segmentation = predictor.predict(image)
-    
-    elapsed = timer.stop()
-    
-    metrics = SegmentationMetrics(mask)
-    
-    stats = metrics.summary()
-
-    c1, c2 = st.columns(2)
-
-    with c1:
-        st.image(image, caption="Original")
-        st.image(overlay_img, caption="Overlay")
-
-    with c2:
-        st.image(foreground, caption="Foreground")
-        st.image(background, caption="Background")
-
-    st.metric(
-        "Inference Time",
-        f"{elapsed:.2f} s"
-    )
-
-    foreground_pixels = (mask > 0).sum()
-    total_pixels = mask.size
-
-    st.metric(
-        "Inference Time",
-        f"{elapsed:.3f} s"
-    )
-    
-    st.metric(
-        "Foreground",
-        f"{stats['foreground_ratio']*100:.1f}%"
-    )
-    
-    st.metric(
-        "Background",
-        f"{stats['background_ratio']*100:.1f}%"
-    )
+mask_image = visualizer.mask_to_image(mask)
