@@ -2,12 +2,12 @@ import time
 import streamlit as st
 from PIL import Image
 
-from predictor import ForegroundPredictor
-from image_utils import (
+from foregroundseg.predictor import ForegroundPredictor
+from foregroundseg.image_utils import (
     create_foreground_mask,
     extract_foreground,
     extract_background,
-    overlay
+    overlay,
 )
 
 st.set_page_config(
