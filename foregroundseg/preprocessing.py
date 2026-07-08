@@ -42,6 +42,17 @@ class ImagePreprocessor:
         ])
 
         self.transform = transforms.Compose(transform_list)
+        """
+        transforms.RandomHorizontalFlip()
+
+        transforms.RandomRotation(10)
+        
+        transforms.ColorJitter(
+            brightness=0.2,
+            contrast=0.2,
+            saturation=0.2
+        )
+        """
 
     def preprocess(self, image: Image.Image):
 
