@@ -89,3 +89,29 @@ class SegmentationVisualizer:
         )
 
         image.save(filename)
+
+    def comparison_figure(original,
+                      overlay,
+                      foreground,
+                      background):
+
+        fig, ax = plt.subplots(2, 2, figsize=(10, 8))
+    
+        ax[0,0].imshow(original)
+        ax[0,0].set_title("Original")
+    
+        ax[0,1].imshow(overlay)
+        ax[0,1].set_title("Overlay")
+    
+        ax[1,0].imshow(foreground)
+        ax[1,0].set_title("Foreground")
+    
+        ax[1,1].imshow(background)
+        ax[1,1].set_title("Background")
+    
+        for a in ax.flat:
+            a.axis("off")
+    
+        plt.tight_layout()
+    
+        return fig
