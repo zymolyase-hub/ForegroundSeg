@@ -24,6 +24,44 @@ class SegmentationMetrics:
 
         self.mask = np.asarray(mask)
 
+    def intersection_over_union(prediction, target):
+
+        prediction = prediction.astype(bool)
+        target = target.astype(bool)
+    
+        intersection = np.logical_and(prediction, target).sum()
+        union = np.logical_or(prediction, target).sum()
+    
+        if union == 0:
+            return 1.0
+    
+        return intersection / union
+
+    def dice_score(prediction, target):
+
+        prediction = prediction.astype(bool)
+        target = target.astype(bool)
+    
+        intersection = np.logical_and(prediction, target).sum()
+    
+        total = prediction.sum() + target.sum()
+    
+        if total == 0:
+            return 1.0
+    
+        return 2 * intersection / total
+
+
+    def pixel_accuracy(prediction, target):
+
+        prediction = prediction.astype(bool)
+        target = target.astype(bool)
+    
+        correct = (prediction == target).sum()
+    
+        return correct / prediction.size
+
+    
     @property
     def total_pixels(self):
         return self.mask.size
